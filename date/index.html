@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="content">
+    <p id="horloge">
+        <span id="heure"></span>
+        <span>:</span>
+        <span id="minutes"></span>
+        <span>:</span>
+        <span id="secondes"></span>
+    </p>
+    <p>
+        <button onclick="modifTime(3600)">+1H</button>
+        <button onclick="modifTime(-3600)">-1H</button>
+        <button onclick="modifTime(60)">+1m</button>
+        <button onclick="modifTime(-60)">-1m</button>
+        <button onclick="modifTime(1)">+1s</button>
+        <button onclick="modifTime(-1)">-1s</button>
+        <button id="playstop" onclick="playStop()">play</button>
+        <button onclick="refresh()">refresh</button>
+    </p>
+
+    <noscript>T'as pas JS sur ton navigateur noob !</noscript>
+    <script src="../../basics.js"></script>
+    <script src="script.js"></script>
+</div>
+</body>
+</html>

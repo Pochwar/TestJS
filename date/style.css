@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Monda');
+body{
+    background: #3D3D3D;
+}
+.content{
+    display : flex;
+    flex-direction: column;
+    align-items: center;
+}
+#horloge{
+    width:60%;
+    display : flex;
+    justify-content: center;
+    font-family : Monda;
+    font-size: 150px;
+    color: #0CFF00;
+    background-color: rgba(255,255,255,0.1);
+    border-radius:15px;
+    box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.7);
+}
+
+button{
+    background: #3D3D3D;
+    color: #0CFF00;
+    border : 1px solid #0CFF00;
+    border-radius:5px;
+}
