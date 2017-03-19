@@ -1,5 +1,5 @@
 //on définit les proprietés CSS "top" et left" du carré
-document.querySelector('.square').style.top = "170px";
+document.querySelector('.square').style.top = "150px";
 document.querySelector('.square').style.left = "150px";
 
 function moveIt(direction,distance){
