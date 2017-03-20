@@ -23,3 +23,15 @@ section{
     position:absolute;
     background-color: #000;
 }
+
+.buttons{
+    position : absolute;
+    top : 10px;
+    left : 10px;
+}
+
+.buttons span p{
+    color: #EAF6FD;
+    margin:5px;
+    padding:5px;
+}

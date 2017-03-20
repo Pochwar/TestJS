@@ -1,3 +1,5 @@
+var walls = getWalls();
+
 //création d'élements (perso, walls, enemis...)
 function createElement(type, id, top, left){
     var elements = document.querySelector(".area").innerHTML;
@@ -130,15 +132,28 @@ function wallSize(){
 
 //fonction pour entrer dans le mode édition
 var edit = null
+document.querySelector('.buttons span').style.visibility = "hidden";
 function toggleEdit(){
     if (!edit){
         edit = "ok";
         document.querySelector('#edit').innerText = "edit mode ON";
+        document.querySelector('.buttons span').style.visibility = "visible";
     } else {
         document.querySelector('#edit').innerText = "edit mode OFF";
+        document.querySelector('.buttons span').style.visibility = "hidden";
         edit = null;
     }
 
+}
+
+//Fonction pour recupèrer les murs depuis le localStorage
+function getWalls() {
+    var walls = [];
+    var wallsStorage = localStorage.getItem('walls');
+    if (wallsStorage !== null) {
+        walls = JSON.parse(wallsStorage);
+    }
+    return walls;
 }
 
 //création des murs #1 click par click
@@ -154,8 +169,10 @@ function createWall(event){
         y = (Math.floor(y/elementsSize))*elementsSize;
         var i = walls.length;
         if(!checkWall4Construct(y, x)){
-            walls.push({type : "wall", num : i, top : y, left : x});
-            createElement("wall", i, y, x);
+            var wallItem = {type : "wall", num : i, top : y, left : x};
+            walls.push(wallItem);
+            localStorage.setItem('walls', JSON.stringify(walls));
+            createElement ("wall", i, y, x);
             wallSize();
         }
     }
@@ -167,4 +184,33 @@ function drawWalls(event){
     if (mouseIsDown){
         createWall(event);
     }
+}
+
+//fonction pour générer des murs depuis un tableau d'objets mur
+function generateWalls(array){
+    localStorage.removeItem('walls');
+    walls = getWalls();
+    for(var i = 0; i < array.length; i++){
+        var wallItem = {type : array[i]["type"], num : array[i]["num"], top : array[i]["top"], left : array[i]["left"]};
+        walls.push(wallItem);
+        localStorage.setItem('walls', JSON.stringify(walls));
+    }
+    buildWalls();
+    location.reload();
+}
+
+//fonction pour créer les murs depuis les infos du localStorage
+function buildWalls(){
+    if (walls.length > 0){
+        for(var i = 0; i < walls.length; i++){
+            createElement ("wall", walls[i]["num"], walls[i]["top"], walls[i]["left"]);
+        }
+        wallSize();
+    }
+}
+
+//Fonction pour supprimer les murs
+function clearWalls() {
+    localStorage.removeItem('walls');
+    location.reload();
 }
