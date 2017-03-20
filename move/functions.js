@@ -1,20 +1,11 @@
-var mouseIsDown = false;
-
-//size of elements
-var elementsSize = 50;
-
-//create area
-var areaWidth = 500;
-var areaHeight = 500;
-document.querySelector(".area").style.width = areaWidth + "px";
-document.querySelector(".area").style.height = areaHeight + "px";
-
+//création d'élements (perso, walls, enemis...)
 function createElement(type, id, top, left){
     var elements = document.querySelector(".area").innerHTML;
     elements += "<div class=\"" + type + "\" id=\"" + id + "\" style=\"top:" + top + "px; left:" + left + "px\"></div>";
     document.querySelector(".area").innerHTML = elements;
 }
 
+//déplacement
 function move(id, direction, distance){
     switch (direction){
         case "top" :
@@ -59,14 +50,14 @@ function move(id, direction, distance){
     //verification de présence de mur pour empecher le déplacement
     if (property === "top"){var verifTop = coordToApply; var verifLeft = parseInt(left.replace("px", ""));}
     if (property === "left"){var verifTop = parseInt(top.replace("px", "")); var verifLeft = coordToApply;}
-    if (!verifWall(verifTop, verifLeft)){
+    if (!checkWall4Move(verifTop, verifLeft)){
         coordToApply = coordToApply + "px";
         document.querySelector('#' + id).style[property] = coordToApply;
     }
 }
 
-//fonction pour construire les mur
-function checkWall(top, left){
+//vérification de l'existence d'un mur avant construction
+function checkWall4Construct(top, left){
     var wallExist = [];
     for(var i = 0; i < walls.length; i++){
         if ((top == walls[i]["top"]) && (left == walls[i]["left"])){
@@ -76,39 +67,59 @@ function checkWall(top, left){
     if (wallExist.length > 0){return true;}
 };
 
-//fonction our le déplacement
-function verifWall(top, left){
-    var wallExist = [];
+//vérification de l'existence d'un mur avant déplacement
+function checkWall4Move(top, left){
+    //recupération des coordonnées du joueur
+    var playerTop = top;
+    var playerBottom = top + elementsSize;
+    var playerLeft = left;
+    var playerRight = left + elementsSize;
+    //tableau d'enregistremetn des coordonnées interdites
+    var forbiddenCoords = [];
     for(var i = 0; i < walls.length; i++){
+        //récupération des coordonnées des murs
         var wallTop = walls[i]["top"];
         var wallBottom = wallTop + elementsSize;
         var wallLeft = walls[i]["left"];
         var wallRight = wallLeft + elementsSize;
-        var playerTop = top;
-        var playerBottom = top + elementsSize;
-        var playerLeft = left;
-        var playerRight = left + elementsSize;
-
-        if ((playerTop <= wallTop) && (playerTop >= wallBottom) && (playerLeft <= wallLeft) && (playerLeft >= wallRight)) {
-            wallExist.push("mur!");
+        for (var y = wallTop; y < wallBottom; y+=elementsSize) {
+            for (var x = wallLeft; x < wallRight; x+=elementsSize) {
+                forbiddenCoords.push({coordX : x, coordY : y})
+            }
         }
     }
-    if (wallExist.length > 0){return true;}
+    //tableau d'enregistrement de collisions
+    var wallCollision = [];
+    for (var i = 0; i < forbiddenCoords.length; i++){
+
+        if (
+            (playerTop === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"])
+            ||
+            (playerTop === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"])
+            ||
+            (playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"])
+            ||
+            (playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"])
+        ) {
+            wallCollision.push("mur!");
+        }
+    }
+    if (wallCollision.length > 0){return true;}
 };
 
+//déplacement du personnage
+function movePlayer(e) {
+    //top
+    if (e.keyCode == 38 && !e.shiftKey) {move("perso1", "top", elementsSize);}
+    //bottom
+    if (e.keyCode == 40 && !e.shiftKey) {move("perso1", "bottom", elementsSize);}
+    //left
+    if (e.keyCode == 37 && !e.shiftKey) {move("perso1", "left", elementsSize);}
+    //right
+    if (e.keyCode == 39 && !e.shiftKey) {move("perso1", "right", elementsSize);}
+}
 
-//Creation du player
-createElement("player", "perso1", 150, 150);
-
-//définition des murs
-var walls = [];
-
-//creation des murs
-// for(var i = 0; i < walls.length; i++){
-//     createElement (walls[i]["type"], walls[i]["num"], walls[i]["top"], walls[i]["left"]);
-// }
-
-//application de la taille des éléments
+//application de la taille des murs
 function wallSize(){
     var allWalls = document.querySelectorAll(".wall")
     for(var i=0; i<allWalls.length; i++){
@@ -116,28 +127,8 @@ function wallSize(){
         allWalls[i].style.height = elementsSize + "px";
     }
 }
-document.querySelector("#perso1").style.width = elementsSize + "px";
-document.querySelector("#perso1").style.height = elementsSize + "px";
 
-
-
-
-function movePlayer(e) {
-    //top
-    if (e.keyCode == 38 && !e.shiftKey) {move("perso1", "top", 10);}
-    if (e.keyCode == 38 && e.shiftKey) {move("perso1", "top", 20);}
-    //bottom
-    if (e.keyCode == 40 && !e.shiftKey) {move("perso1", "bottom", 10);}
-    if (e.keyCode == 40 && e.shiftKey) {move("perso1", "bottom", 20);}
-    //left
-    if (e.keyCode == 37 && !e.shiftKey) {move("perso1", "left", 10);}
-    if (e.keyCode == 37 && e.shiftKey) {move("perso1", "left", 20);}
-    //right
-    if (e.keyCode == 39 && !e.shiftKey) {move("perso1", "right", 10);}
-    if (e.keyCode == 39 && e.shiftKey) {move("perso1", "right", 20);}
-}
-
-
+//création des murs #1 click par click
 function createWall(event){
     var parentX = document.querySelector(".content").offsetLeft;
     var parentY = document.querySelector(".content").offsetTop;
@@ -148,27 +139,17 @@ function createWall(event){
     x = (Math.floor(x/elementsSize))*elementsSize;
     y = (Math.floor(y/elementsSize))*elementsSize;
     var i = walls.length;
-    if(!checkWall(y, x)){
+    if(!checkWall4Construct(y, x)){
         walls.push({type : "wall", num : i, top : y, left : x});
     }
     createElement("wall", i, y, x);
     wallSize();
-    console.log(walls.length);
 }
 
+//création des murs # en dessinant avec la souris
+var mouseIsDown = false;
 function drawWalls(event){
     if (mouseIsDown){
         createWall(event);
     }
 }
-
-
-document.querySelector('.area').addEventListener("mousedown", function(e){
-    mouseIsDown = true;
-});
-document.querySelector('.area').addEventListener("mouseup", function(e){
-    mouseIsDown = false;
-});
-
-document.querySelector('.area').addEventListener("mousemove", drawWalls);
-document.querySelector('.area').addEventListener("click", createWall);
