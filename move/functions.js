@@ -128,21 +128,36 @@ function wallSize(){
     }
 }
 
+//fonction pour entrer dans le mode édition
+var edit = null
+function toggleEdit(){
+    if (!edit){
+        edit = "ok";
+        document.querySelector('#edit').innerText = "edit mode ON";
+    } else {
+        document.querySelector('#edit').innerText = "edit mode OFF";
+        edit = null;
+    }
+
+}
+
 //création des murs #1 click par click
 function createWall(event){
-    var parentX = document.querySelector(".content").offsetLeft;
-    var parentY = document.querySelector(".content").offsetTop;
-    var mouseX = event.clientX;
-    var mouseY = event.clientY;
-    var x = mouseX - parentX;
-    var y = mouseY - parentY;
-    x = (Math.floor(x/elementsSize))*elementsSize;
-    y = (Math.floor(y/elementsSize))*elementsSize;
-    var i = walls.length;
-    if(!checkWall4Construct(y, x)){
-        walls.push({type : "wall", num : i, top : y, left : x});
-        createElement("wall", i, y, x);
-        wallSize();
+    if(edit === "ok"){
+        var parentX = document.querySelector(".content").offsetLeft;
+        var parentY = document.querySelector(".content").offsetTop;
+        var mouseX = event.clientX;
+        var mouseY = event.clientY;
+        var x = mouseX - parentX;
+        var y = mouseY - parentY;
+        x = (Math.floor(x/elementsSize))*elementsSize;
+        y = (Math.floor(y/elementsSize))*elementsSize;
+        var i = walls.length;
+        if(!checkWall4Construct(y, x)){
+            walls.push({type : "wall", num : i, top : y, left : x});
+            createElement("wall", i, y, x);
+            wallSize();
+        }
     }
 }
 
