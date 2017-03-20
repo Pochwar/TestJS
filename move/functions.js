@@ -9,6 +9,7 @@ function createElement(type, id, top, left){
 
 //déplacement
 function move(id, direction, distance){
+    var moveOk = true;
     switch (direction){
         case "top" :
         var property = "top"
@@ -41,12 +42,16 @@ function move(id, direction, distance){
     if (negative){
         if (coordToChange > 0){
             coordToApply = coordToChange-distance;
+        } else {
+            moveOk = false;
         }
     }
     //bottom & right
     if(!negative){
         if ((property === "top" && coordToChange+elementsSize < areaHeight) || (property === "left" && coordToChange+elementsSize < areaWidth)){
             coordToApply = coordToChange+distance;
+        } else {
+            moveOk = false;
         }
     }
     //verification de présence de mur pour empecher le déplacement
@@ -55,7 +60,10 @@ function move(id, direction, distance){
     if (!checkWall4Move(verifTop, verifLeft)){
         coordToApply = coordToApply + "px";
         document.querySelector('#' + id).style[property] = coordToApply;
+    } else {
+        moveOk = false;
     }
+    return moveOk;
 }
 
 //vérification de l'existence d'un mur avant construction
@@ -213,4 +221,40 @@ function buildWalls(){
 function clearWalls() {
     localStorage.removeItem('walls');
     location.reload();
+}
+var goTop = true;
+var goBottom = true;
+var goLeft = true;
+var goRight = true;
+//fonction pour faire se déplacer les enemis
+function moveEnemies(){
+
+    var interval = setInterval(function(){
+        //go Right !
+        if(goRight){
+            if(!move("enemy1", "right", elementsSize)){
+                goRight = false;
+            }
+        } else {
+            if(goBottom){
+                if(!move("enemy1", "bottom", elementsSize)){
+                    goBottom = false;
+                }
+            } else {
+                if(goLeft){
+                    if(!move("enemy1", "left", elementsSize)){
+                        goLeft = false;
+                    }
+                } else {
+                    if(goTop){
+                        if(!move("enemy1", "top", elementsSize)){
+                            goRight = true;
+                            goBottom = true;
+                            goLeft = true;
+                        }
+                    }
+                }
+            }
+        }
+    },100);
 }

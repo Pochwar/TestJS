@@ -3,6 +3,11 @@ createElement("player", "perso1", persoY, persoX);
 document.querySelector("#perso1").style.width = elementsSize + "px";
 document.querySelector("#perso1").style.height = elementsSize + "px";
 
+//Creations des enemis
+createElement("enemy", "enemy1", 90, 30);
+document.querySelector(".enemy").style.width = elementsSize + "px";
+document.querySelector(".enemy").style.height = elementsSize + "px";
+
 //détecte si la souris clique ou pas
 document.querySelector('.area').addEventListener("mousedown", function(e){
     mouseIsDown = true;
@@ -28,3 +33,4 @@ document.querySelector('.area').addEventListener("click", createWall);
 document.querySelector('body').addEventListener("keydown", movePlayer);
 
 buildWalls();
+moveEnemies();
