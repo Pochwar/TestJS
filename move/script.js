@@ -1,3 +1,5 @@
+var mouseIsDown = false;
+
 function createElement(type, id, top, left){
     var elements = document.querySelector(".area").innerHTML;
     elements += "<div class=\"" + type + "\" id=\"" + id + "\" style=\"top:" + top + "px; left:" + left + "px\"></div>";
@@ -48,31 +50,27 @@ function move(id, direction, distance){
     //verification de présence de mur pour empecher le déplacement
     if (property === "top"){var verifTop = coordToApply; var verifLeft = parseInt(left.replace("px", ""));}
     if (property === "left"){var verifTop = parseInt(top.replace("px", "")); var verifLeft = coordToApply;}
-    if (!detectWall(verifTop, verifLeft)){
+    if (!checkWall(verifTop, verifLeft)){
         coordToApply = coordToApply + "px";
         document.querySelector('#' + id).style[property] = coordToApply;
     }
 }
 
-function detectWall(top, left){
+function checkWall(top, left){
+    var wallExist = [];
     for(var i = 0; i < walls.length; i++){
         if ((top == walls[i]["top"]) && (left == walls[i]["left"])){
-            return true;
+            wallExist.push("mur!");
         }
     }
+    if (wallExist.length > 0){return true;}
 };
 //Creation du player
 createElement("player", "perso1", 150, 150);
 
 //définition des murs
-var walls = [
-    {type : "wall", num : 0, top : 30, left : 0},
-    {type : "wall", num : 1, top : 0, left : 0},
-    {type : "wall", num : 2, top : 0, left : 10},
-    {type : "wall", num : 3, top : 150, left : 120},
-    {type : "wall", num : 4, top : 70, left : 30},
-    {type : "wall", num : 5, top : 80, left : 120}
-];
+var walls = [];
+
 //creation des murs
 for(var i = 0; i < walls.length; i++){
     createElement (walls[i]["type"], walls[i]["num"], walls[i]["top"], walls[i]["left"]);
@@ -95,8 +93,7 @@ function movePlayer(e) {
 }
 
 
-function createWall(event)
-{
+function createWall(event){
     var parentX = document.querySelector(".content").offsetLeft;
     var parentY = document.querySelector(".content").offsetTop;
     var mouseX = event.clientX;
@@ -106,7 +103,26 @@ function createWall(event)
     x = (Math.floor(x/10))*10;
     y = (Math.floor(y/10))*10;
     var i = walls.length;
-    walls.push({type : "wall", num : i, top : y, left : x});
+    if(!checkWall(y, x)){
+        walls.push({type : "wall", num : i, top : y, left : x});
+    }
     createElement("wall", i, y, x);
-    console.log(walls[6]);
+    console.log(walls.length);
 }
+
+function drawWalls(event){
+    if (mouseIsDown){
+        createWall(event);
+    }
+}
+
+
+document.querySelector('.area').addEventListener("mousedown", function(e){
+    mouseIsDown = true;
+});
+document.querySelector('.area').addEventListener("mouseup", function(e){
+    mouseIsDown = false;
+});
+
+document.querySelector('.area').addEventListener("mousemove", drawWalls);
+document.querySelector('.area').addEventListener("click", createWall);
