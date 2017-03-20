@@ -66,12 +66,12 @@ createElement("player", "perso1", 150, 150);
 
 //définition des murs
 var walls = [
-    {type : "wall", num : "0", top : 30, left : 0},
-    {type : "wall", num : "1", top : 0, left : 0},
-    {type : "wall", num : "2", top : 0, left : 10},
-    {type : "wall", num : "3", top : 150, left : 120},
-    {type : "wall", num : "4", top : 70, left : 30},
-    {type : "wall", num : "5", top : 80, left : 120}
+    {type : "wall", num : 0, top : 30, left : 0},
+    {type : "wall", num : 1, top : 0, left : 0},
+    {type : "wall", num : 2, top : 0, left : 10},
+    {type : "wall", num : 3, top : 150, left : 120},
+    {type : "wall", num : 4, top : 70, left : 30},
+    {type : "wall", num : 5, top : 80, left : 120}
 ];
 //creation des murs
 for(var i = 0; i < walls.length; i++){
@@ -92,4 +92,21 @@ function movePlayer(e) {
     //right
     if (e.keyCode == 39 && !e.shiftKey) {move("perso1", "right", 10);}
     if (e.keyCode == 39 && e.shiftKey) {move("perso1", "right", 20);}
+}
+
+
+function createWall(event)
+{
+    var parentX = document.querySelector(".content").offsetLeft;
+    var parentY = document.querySelector(".content").offsetTop;
+    var mouseX = event.clientX;
+    var mouseY = event.clientY;
+    var x = mouseX - parentX;
+    var y = mouseY - parentY;
+    x = (Math.floor(x/10))*10;
+    y = (Math.floor(y/10))*10;
+    var i = walls.length;
+    walls.push({type : "wall", num : i, top : y, left : x});
+    createElement("wall", i, y, x);
+    console.log(walls[6]);
 }
