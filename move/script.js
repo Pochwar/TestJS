@@ -1,5 +1,14 @@
 var mouseIsDown = false;
 
+//size of elements
+var elementsSize = 50;
+
+//create area
+var areaWidth = 500;
+var areaHeight = 500;
+document.querySelector(".area").style.width = areaWidth + "px";
+document.querySelector(".area").style.height = areaHeight + "px";
+
 function createElement(type, id, top, left){
     var elements = document.querySelector(".area").innerHTML;
     elements += "<div class=\"" + type + "\" id=\"" + id + "\" style=\"top:" + top + "px; left:" + left + "px\"></div>";
@@ -43,19 +52,20 @@ function move(id, direction, distance){
     }
     //bottom & right
     if(!negative){
-        if (coordToChange < 300){
+        if ((property === "top" && coordToChange+elementsSize < areaHeight) || (property === "left" && coordToChange+elementsSize < areaWidth)){
             coordToApply = coordToChange+distance;
         }
     }
     //verification de présence de mur pour empecher le déplacement
     if (property === "top"){var verifTop = coordToApply; var verifLeft = parseInt(left.replace("px", ""));}
     if (property === "left"){var verifTop = parseInt(top.replace("px", "")); var verifLeft = coordToApply;}
-    if (!checkWall(verifTop, verifLeft)){
+    if (!verifWall(verifTop, verifLeft)){
         coordToApply = coordToApply + "px";
         document.querySelector('#' + id).style[property] = coordToApply;
     }
 }
 
+//fonction pour construire les mur
 function checkWall(top, left){
     var wallExist = [];
     for(var i = 0; i < walls.length; i++){
@@ -65,6 +75,28 @@ function checkWall(top, left){
     }
     if (wallExist.length > 0){return true;}
 };
+
+//fonction our le déplacement
+function verifWall(top, left){
+    var wallExist = [];
+    for(var i = 0; i < walls.length; i++){
+        var wallTop = walls[i]["top"];
+        var wallBottom = wallTop + elementsSize;
+        var wallLeft = walls[i]["left"];
+        var wallRight = wallLeft + elementsSize;
+        var playerTop = top;
+        var playerBottom = top + elementsSize;
+        var playerLeft = left;
+        var playerRight = left + elementsSize;
+
+        if ((playerTop <= wallTop) && (playerTop >= wallBottom) && (playerLeft <= wallLeft) && (playerLeft >= wallRight)) {
+            wallExist.push("mur!");
+        }
+    }
+    if (wallExist.length > 0){return true;}
+};
+
+
 //Creation du player
 createElement("player", "perso1", 150, 150);
 
@@ -72,9 +104,22 @@ createElement("player", "perso1", 150, 150);
 var walls = [];
 
 //creation des murs
-for(var i = 0; i < walls.length; i++){
-    createElement (walls[i]["type"], walls[i]["num"], walls[i]["top"], walls[i]["left"]);
+// for(var i = 0; i < walls.length; i++){
+//     createElement (walls[i]["type"], walls[i]["num"], walls[i]["top"], walls[i]["left"]);
+// }
+
+//application de la taille des éléments
+function wallSize(){
+    var allWalls = document.querySelectorAll(".wall")
+    for(var i=0; i<allWalls.length; i++){
+        allWalls[i].style.width = elementsSize + "px";
+        allWalls[i].style.height = elementsSize + "px";
+    }
 }
+document.querySelector("#perso1").style.width = elementsSize + "px";
+document.querySelector("#perso1").style.height = elementsSize + "px";
+
+
 
 
 function movePlayer(e) {
@@ -100,13 +145,14 @@ function createWall(event){
     var mouseY = event.clientY;
     var x = mouseX - parentX;
     var y = mouseY - parentY;
-    x = (Math.floor(x/10))*10;
-    y = (Math.floor(y/10))*10;
+    x = (Math.floor(x/elementsSize))*elementsSize;
+    y = (Math.floor(y/elementsSize))*elementsSize;
     var i = walls.length;
     if(!checkWall(y, x)){
         walls.push({type : "wall", num : i, top : y, left : x});
     }
     createElement("wall", i, y, x);
+    wallSize();
     console.log(walls.length);
 }
 
