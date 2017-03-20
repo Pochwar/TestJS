@@ -1,8 +1,16 @@
-@import url('https://fonts.googleapis.com/css?family=Monda');
 body{
-    background: #3D3D3D;
-
+    background: #4972b0;
 }
+
+h1{
+    color : #ffeb36;
+}
+
+#info{
+    margin-top: 0;
+    color: #fff;
+}
+
 section{
     display: flex;
     align-items: center;
@@ -11,17 +19,18 @@ section{
 
 .area{
     position: relative;
-    background-color: rgba(255,255,255,0.1);
+    background-color: #1d8828;
 }
 
 #perso1{
     position:absolute;
-    background-color: #f00;
+    background-color: #d08912;
+    border-radius: 15px;
 }
 
 .wall{
     position:absolute;
-    background-color: #000;
+    background-color: #3d2701;
 }
 
 .buttons{
