@@ -1,1 +1,32 @@
-button {}
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1{
+
+}
+
+.content{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+#list{
+
+}
+
+#list p{
+    display : flex;
+    justify-content: space-between;
+}
+
+#list p:first-child span .up{
+    visibility : hidden;
+}
+
+#list p:last-child span .down{
+    visibility : hidden;
+}
