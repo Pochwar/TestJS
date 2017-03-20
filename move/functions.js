@@ -141,9 +141,9 @@ function createWall(event){
     var i = walls.length;
     if(!checkWall4Construct(y, x)){
         walls.push({type : "wall", num : i, top : y, left : x});
+        createElement("wall", i, y, x);
+        wallSize();
     }
-    createElement("wall", i, y, x);
-    wallSize();
 }
 
 //création des murs # en dessinant avec la souris
