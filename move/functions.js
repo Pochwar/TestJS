@@ -57,7 +57,7 @@ function move(id, direction, distance){
     //verification de présence de mur pour empecher le déplacement
     if (property === "top"){var verifTop = coordToApply; var verifLeft = parseInt(left.replace("px", ""));}
     if (property === "left"){var verifTop = parseInt(top.replace("px", "")); var verifLeft = coordToApply;}
-    if (!checkWall4Move(verifTop, verifLeft)){
+    if (!checkWall4Move(id, verifTop, verifLeft)){
         coordToApply = coordToApply + "px";
         document.querySelector('#' + id).style[property] = coordToApply;
     } else {
@@ -78,68 +78,65 @@ function checkWall4Construct(top, left){
 };
 
 //vérification de l'existence d'un mur avant déplacement
-function checkWall4Move(top, left){
+function checkWall4Move(id, top, left){
     //recupération des coordonnées du joueur
-    var playerTop = top;
-    var playerBottom = top + elementsSize;
-    var playerLeft = left;
-    var playerRight = left + elementsSize;
+    var playerX1 = top;
+    var playerX2 = top + elementsSize;
+    var playerY1= left;
+    var playerY2 = left + elementsSize;
     //tableau d'enregistremetn des coordonnées interdites
     var forbiddenCoords = [];
     for(var i = 0; i < walls.length; i++){
         //récupération des coordonnées des murs
-        var wallTop = walls[i]["top"];
-        var wallBottom = wallTop + elementsSize;
-        var wallLeft = walls[i]["left"];
-        var wallRight = wallLeft + elementsSize;
-        for (var y = wallTop; y < wallBottom; y+=elementsSize) {
-            for (var x = wallLeft; x < wallRight; x+=elementsSize) {
-                forbiddenCoords.push({coordX : x, coordY : y})
-            }
-        }
+        var wallX1 = walls[i]["top"];
+        var wallX2 = wallX1 + elementsSize;
+        var wallY1 = walls[i]["left"];
+        var wallY2 = wallY1 + elementsSize;
+
+        forbiddenCoords.push({coordX1 : wallX1, coordY1 : wallY1, coordX2 : wallX2, coordY2 : wallY2})
+
     }
     //coordonnées du player
-    var selfX = document.querySelector("#perso1").offsetTop;
-    var selfY = document.querySelector("#perso1").offsetLeft;
-
-    console.log("###");
-    console.log(selfX);
-    console.log(selfY);
-    console.log(playerTop);
-    console.log(playerLeft);
+    var selfX1 = document.querySelector("#perso1").offsetTop;
+    var selfX2 = selfX1 + elementsSize;
+    var selfY1 = document.querySelector("#perso1").offsetLeft;
+    var selfY2 = selfY1 + elementsSize;
 
     //tableau d'enregistrement de collisions
     var wallCollision = [];
     for (var i = 0; i < forbiddenCoords.length; i++){
-
-        if (
-            //forbiddenCoords
-            ((playerTop === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"]))
-            ||
-            ((playerTop === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"]))
-            ||
-            ((playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"]))
-            ||
-            ((playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"]))
-        ) {
+        //forbiddenCoords
+        if ((playerX1 === forbiddenCoords[i]["coordX1"]) && (playerX2 === forbiddenCoords[i]["coordX2"]) && (playerY1 === forbiddenCoords[i]["coordY1"]) && (playerY2 === forbiddenCoords[i]["coordY2"])) {
             wallCollision.push("mur!");
         }
-        // else if(
-        //     //self
-        //     (((playerTop == selfY) || (playerTop == selfY-elementsSize) || (playerTop == selfX) || (playerTop == selfX-elementsSize))
-        //         &&
-        //         ((playerLeft == selfX) || (playerLeft == selfX-elementsSize) || (playerLeft == selfY) || (playerLeft == selfY-elementsSize)))
-        //     ||
-        //     ((playerTop == selfY) && (playerRight-elementsSize == selfX))
-        //     ||
-        //     ((playerBottom-elementsSize == selfY) && (playerLeft == selfX))
-        //     ||
-        //     ((playerBottom-elementsSize == selfY) && (playerRight-elementsSize == selfX))
-        // ) {
-        //     wallCollision.push("self");
-        // }
+        //self
+        if(id !== "perso1"){
+            if((playerX1 === selfX1) && (playerX2 === selfX2) && (playerY1 === selfY1) && (playerY2 === selfY2)) {
+                wallCollision.push("self");
+            }
+        }
     }
     if (wallCollision.length > 0){return true;}
+
+    //TARGET
+    var targetX1 = document.querySelector(".target").offsetTop;
+    var targetX2 = targetX1 + elementsSize;
+    var targetY1 = document.querySelector(".target").offsetLeft;
+    var targetY2 = targetY1 + elementsSize;
+    console.log("###");
+    console.log(targetX1);
+    console.log(targetX2);
+    console.log(targetY1);
+    console.log(targetY2);
+    console.log(playerX1);
+    console.log(playerX2);
+    console.log(playerY1);
+    console.log(playerY2);
+    if(id !== "perso1"){
+        if((playerX1 === targetX1) && (playerX2 === targetX2) && (playerY1 === targetY1) && (playerY2 === targetY2)) {
+            alert("win !!");
+        }
+    }
 };
 
 //déplacement du personnage
@@ -164,17 +161,20 @@ function wallSize(){
 }
 
 //fonction pour entrer dans le mode édition
-var edit = null
-document.querySelector('.buttons span').style.visibility = "hidden";
+var edit = true;
+var interval = false
+document.querySelector('.buttons span').style.visibility = "visible";
 function toggleEdit(){
     if (!edit){
-        edit = "ok";
-        document.querySelector('#edit').innerText = "edit mode ON";
+        edit = true;
+        clearInterval(interval);
+        document.querySelector('#edit').innerText = "PLAY";
         document.querySelector('.buttons span').style.visibility = "visible";
     } else {
-        document.querySelector('#edit').innerText = "edit mode OFF";
+        document.querySelector('#edit').innerText = "PAUSE";
         document.querySelector('.buttons span').style.visibility = "hidden";
-        edit = null;
+        edit = false;
+        interval = setInterval(moveEnemies,100);
     }
 
 }
@@ -191,7 +191,7 @@ function getWalls() {
 
 //création des murs #1 click par click
 function createWall(event){
-    if(edit === "ok"){
+    if(edit){
         var parentX = document.querySelector(".content").offsetLeft;
         var parentY = document.querySelector(".content").offsetTop;
         var mouseX = event.clientX;
@@ -247,39 +247,37 @@ function clearWalls() {
     localStorage.removeItem('walls');
     location.reload();
 }
+
+//fonction pour faire se déplacer les enemis
 var goTop = true;
 var goBottom = true;
 var goLeft = true;
 var goRight = true;
-//fonction pour faire se déplacer les enemis
 function moveEnemies(){
-
-    var interval = setInterval(function(){
-        //go Right !
-        if(goRight){
-            if(!move("enemy1", "right", elementsSize)){
-                goRight = false;
+    //go Right !
+    if(goRight){
+        if(!move("enemy1", "right", elementsSize)){
+            goRight = false;
+        }
+    } else {
+        if(goBottom){
+            if(!move("enemy1", "bottom", elementsSize)){
+                goBottom = false;
             }
         } else {
-            if(goBottom){
-                if(!move("enemy1", "bottom", elementsSize)){
-                    goBottom = false;
+            if(goLeft){
+                if(!move("enemy1", "left", elementsSize)){
+                    goLeft = false;
                 }
             } else {
-                if(goLeft){
-                    if(!move("enemy1", "left", elementsSize)){
-                        goLeft = false;
-                    }
-                } else {
-                    if(goTop){
-                        if(!move("enemy1", "top", elementsSize)){
-                            goRight = true;
-                            goBottom = true;
-                            goLeft = true;
-                        }
+                if(goTop){
+                    if(!move("enemy1", "top", elementsSize)){
+                        goRight = true;
+                        goBottom = true;
+                        goLeft = true;
                     }
                 }
             }
         }
-    },100);
+    }
 }

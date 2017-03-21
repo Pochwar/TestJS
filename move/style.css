@@ -34,6 +34,13 @@ section{
     border-radius: 15px;
 }
 
+.target{
+    position:absolute;
+    background-color: #000;
+    border-radius: 15px;
+    border : 1px solid #f00;
+}
+
 .wall{
     position:absolute;
     background-color: #3d2701;

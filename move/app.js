@@ -8,6 +8,11 @@ createElement("enemy", "enemy1", 90, 30);
 document.querySelector(".enemy").style.width = elementsSize + "px";
 document.querySelector(".enemy").style.height = elementsSize + "px";
 
+//Creation de la cible
+createElement("target", "target", 300, 405);
+document.querySelector(".target").style.width = elementsSize + "px";
+document.querySelector(".target").style.height = elementsSize + "px";
+
 //détecte si la souris clique ou pas
 document.querySelector('.area').addEventListener("mousedown", function(e){
     mouseIsDown = true;
