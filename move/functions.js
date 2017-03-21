@@ -98,21 +98,46 @@ function checkWall4Move(top, left){
             }
         }
     }
+    //coordonnées du player
+    var selfX = document.querySelector("#perso1").offsetTop;
+    var selfY = document.querySelector("#perso1").offsetLeft;
+
+    console.log("###");
+    console.log(selfX);
+    console.log(selfY);
+    console.log(playerTop);
+    console.log(playerLeft);
+
     //tableau d'enregistrement de collisions
     var wallCollision = [];
     for (var i = 0; i < forbiddenCoords.length; i++){
 
         if (
-            (playerTop === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"])
+            //forbiddenCoords
+            ((playerTop === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"]))
             ||
-            (playerTop === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"])
+            ((playerTop === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"]))
             ||
-            (playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"])
+            ((playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerLeft === forbiddenCoords[i]["coordX"]))
             ||
-            (playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"])
+            ((playerBottom-elementsSize === forbiddenCoords[i]["coordY"]) && (playerRight-elementsSize === forbiddenCoords[i]["coordX"]))
         ) {
             wallCollision.push("mur!");
         }
+        // else if(
+        //     //self
+        //     (((playerTop == selfY) || (playerTop == selfY-elementsSize) || (playerTop == selfX) || (playerTop == selfX-elementsSize))
+        //         &&
+        //         ((playerLeft == selfX) || (playerLeft == selfX-elementsSize) || (playerLeft == selfY) || (playerLeft == selfY-elementsSize)))
+        //     ||
+        //     ((playerTop == selfY) && (playerRight-elementsSize == selfX))
+        //     ||
+        //     ((playerBottom-elementsSize == selfY) && (playerLeft == selfX))
+        //     ||
+        //     ((playerBottom-elementsSize == selfY) && (playerRight-elementsSize == selfX))
+        // ) {
+        //     wallCollision.push("self");
+        // }
     }
     if (wallCollision.length > 0){return true;}
 };
