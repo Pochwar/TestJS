@@ -9,8 +9,9 @@ var areaHeight = rows*elementsSize;
 document.querySelector(".area").style.width = areaWidth + "px";
 document.querySelector(".area").style.height = areaHeight + "px";
 
-//position du personnage
-var persoCol = 25;
-var persoRow = 15;
-var persoX = persoCol*elementsSize;
-var persoY = persoRow*elementsSize;
+//Positions de base des éléments
+var baseElements = [
+    {"type":"player","id":"player","top":105,"left":375},
+    {"type":"dumbbot","id":"dumbbot","top":105,"left":180},
+    {"type":"target","id":"target","top":240,"left":360}
+]

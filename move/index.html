@@ -5,21 +5,38 @@
     <meta name="viewport"
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>DumbBot</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class = "buttons">
+    <div class="buttons">
         <button id="edit">PLAY</button><br/>
-        <span>
-            <p>Click on area to draw walls</p>
-            <button id="clear">Clear Walls</button><br/>
-            <button id="load">load template</button>
-        </span>
+        <div class="options">
+            <p class="info">Use arrows to move</p>
+            <hr>
+            <p>EDITION</p>
+            <p>Clic : Build walls</p>
+            <p>Clic+Shift : Destroy walls</p>
+            <p>Clic+Ctrl : Position Player</p>
+            <p>Clic+Alt : Position DumbBot</p>
+            <p>Clic+Ctrl+Alt : Position Target</p>
+            <p><a id="clear">Clear Walls</a></p>
+            <p><a id="save">Save</a></p>
+            <br/>
+            <p>LEVELS</p>
+            <p><a id="load0">load Level 0</a></p>
+            <p><a id="load1">load Level 1</a></p>
+        </div>
     </div>
     <section>
-        <h1>Amazing moving game !</h1>
-        <p id="info">use arrows to move</p>
+        <h1>DumbBot</h1>
+        <p class="info">Move Player to make DumbBot reach Target</p>
+
+        <div class="elements">
+            <p class="info"><span class="playercircle"></span>&nbsp;Player</p>
+            <p class="info"><span class="dumbbotcircle"></span>&nbsp;DumbBot</p>
+            <p class="info"><span class="targetcircle"></span>&nbsp;Target</p>
+        </div>
         <div class="content">
             <div class="area" id"area">
             </div>
@@ -28,7 +45,7 @@
     <noscript>T'as pas JS sur ton navigateur noob !</noscript>
     <script src="config.js"></script>
     <script src="functions.js"></script>
-    <script src="template.js"></script>
+    <script src="levels.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

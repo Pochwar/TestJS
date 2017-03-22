@@ -6,29 +6,70 @@ h1{
     color : #ffeb36;
 }
 
-#info{
+.info{
     margin-top: 0;
     color: #fff;
+    position : relative;
 }
 
 section{
     display: flex;
     align-items: center;
     flex-direction: column;
+
 }
+.elements{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 250px;
+}
+
+.playercircle{
+    position:absolute;
+    background-color: #d08912;
+    border-radius: 15px;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 5px;
+    left: -10px;
+}
+.dumbbotcircle{
+    position:absolute;
+    background-color: #630d0d;
+    border-radius: 15px;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 5px;
+    left: -10px;
+}
+.targetcircle{
+    position:absolute;
+    background-color: #000;
+    border-radius: 15px;
+    border : 1px solid #f00;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 5px;
+    left: -10px;
+}
+
 
 .area{
     position: relative;
     background-color: #1d8828;
 }
 
-#perso1{
+.player{
     position:absolute;
     background-color: #d08912;
     border-radius: 15px;
 }
 
-.enemy{
+.dumbbot{
     position:absolute;
     background-color: #630d0d;
     border-radius: 15px;
@@ -52,8 +93,13 @@ section{
     left : 10px;
 }
 
-.buttons span p{
+.buttons .options p{
     color: #EAF6FD;
     margin:5px;
-    padding:5px;
+}
+
+a {
+    color: #EAF6FD;
+    text-decoration: underline;
+    cursor: pointer;
 }

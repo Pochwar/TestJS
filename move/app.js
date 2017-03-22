@@ -1,18 +1,3 @@
-//Creation du player
-createElement("player", "perso1", persoY, persoX);
-document.querySelector("#perso1").style.width = elementsSize + "px";
-document.querySelector("#perso1").style.height = elementsSize + "px";
-
-//Creations des enemis
-createElement("enemy", "enemy1", 90, 30);
-document.querySelector(".enemy").style.width = elementsSize + "px";
-document.querySelector(".enemy").style.height = elementsSize + "px";
-
-//Creation de la cible
-createElement("target", "target", 300, 405);
-document.querySelector(".target").style.width = elementsSize + "px";
-document.querySelector(".target").style.height = elementsSize + "px";
-
 //détecte si la souris clique ou pas
 document.querySelector('.area').addEventListener("mousedown", function(e){
     mouseIsDown = true;
@@ -25,17 +10,47 @@ document.querySelector('.area').addEventListener("mouseup", function(e){
 document.querySelector('#edit').addEventListener("click", toggleEdit);
 
 //efface tous les murs
-document.querySelector('#clear').addEventListener("click", clearWalls);
+document.querySelector('#clear').addEventListener("click", function () {clearWalls();location.reload();});
 
-//chargement du template
-document.querySelector('#load').addEventListener("click", function () {generateWalls(template);});
+//efface tous les murs
+document.querySelector('#save').addEventListener("click", saveLevel);
+
+//chargement du level 0
+document.querySelector('#load0').addEventListener("click", function () {
+    // console.log(elements);
+    clearElements();
+    elements = getStorage("elements");
+    clearWalls();
+    walls = getStorage("walls");
+    saveToStorage(baseElements, elements, "elements");
+    location.reload();
+});
+
+//chargement du level 1
+document.querySelector('#load1').addEventListener("click", function () {
+    // console.log(elements);
+    clearElements();
+    elements = getStorage("elements");
+    clearWalls();
+    walls = getStorage("walls");
+    saveToStorage(lvlOneWalls, walls, "walls");
+    saveToStorage(lvl1Elements, elements, "elements");
+    location.reload();
+});
 
 //initie les fonctions de création de murs
 document.querySelector('.area').addEventListener("mousemove", drawWalls);
-document.querySelector('.area').addEventListener("click", createWall);
+document.querySelector('.area').addEventListener("click", getAction);
 
 //initie la fonction de déplacement du joueur
 document.querySelector('body').addEventListener("keydown", movePlayer);
 
-buildWalls();
-moveEnemies();
+
+//creation des éléments en position de base
+if (elements.length === 0){
+    saveToStorage(baseElements, elements, "elements");
+    location.reload();
+}
+
+buildFromStorage(walls);
+buildFromStorage(elements);
