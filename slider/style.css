@@ -1,0 +1,11 @@
+button {
+    background: #fff;
+    border: 1px solid #000;
+    border-radius : 5px;
+    margin: 0 5px;
+}
+
+section {
+    display : flex;
+    justify-content: space-around;
+}
