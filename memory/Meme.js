@@ -1,45 +1,47 @@
-function Kittens(images, params){
+function Meme(images, params){
     this.images = images;
     this.params = params || {};
     this.delay = this.params.delay || 1000;
     this.height = this.params.height || 150;
     this.width = this.params.width || 150;
-    this.createKittens();
-    this.imgShown = [];
+    this.createMeme();
+    this.imgCompare = [];
+    this.imgOk = []
 }
 
-Kittens.prototype.createKittens = function () {
+Meme.prototype.createMeme = function () {
     //creation de la div contenant les Boutons
     var parent = $("#kittenImages");
 
     //duplication du tableau
     var images2 = this.images;
-    var kittens = this.images.concat(images2);
+    var Meme = this.images.concat(images2);
 
     //creation d'un tableau d'images en doubles mélangées aléatoirement
-    var cloneKittens = []
+    var cloneMeme = []
     var usedIndex = []
     var i = 0;
-    while (cloneKittens.length !== kittens.length){
+    while (cloneMeme.length !== Meme.length){
         do {
-            var rand = Math.floor(Math.random()*kittens.length);
+            var rand = Math.floor(Math.random()*Meme.length);
         } while (usedIndex.indexOf(rand) !== -1)
-        cloneKittens[i] = kittens[rand];
+        cloneMeme[i] = Meme[rand];
         usedIndex.push(rand);
         i++;
     }
-    // cloneKittens.forEach(function(img){
+    // cloneMeme.forEach(function(img){
     //     console.log(img)
     // });
     // creation des images
-    cloneKittens.forEach(this.createImg.bind(this, parent));
+    cloneMeme.forEach(this.createImg.bind(this, parent));
 };
 
 //fonction de création des images
-Kittens.prototype.createImg = function (parent, image, id) {
+Meme.prototype.createImg = function (parent, image, id) {
     var div = document.createElement("div");
     div.addEventListener('click', this.show.bind(this, id));
-    div.setAttribute("style", "background:#eeeeee");
+    div.setAttribute("style", "height:"+this.height+"px;width:"+this.width+"px");
+    div.className = "divimg";
     var img = document.createElement("img");
     img.setAttribute("src", image);
     img.classeName = "img";
@@ -51,39 +53,46 @@ Kittens.prototype.createImg = function (parent, image, id) {
     parent.append(div);
 };
 
-Kittens.prototype.show = function (id) {
-    if (this.imgShown.length < 2){
+Meme.prototype.show = function (id) {
+    var ok = true;
+    //test if img hasn't already been clicked
+    this.imgCompare.forEach(function(imgId){
+        if (id === imgId) {
+            ok = false
+        }
+    });
+    //or img has'nt already been validated
+    this.imgOk.forEach(function(imgId){
+        if (id === imgId) {
+            ok = false
+        }
+    });
+    if (ok && this.imgCompare.length < 2){
         document.querySelector("#img-"+id).setAttribute("style", "visibility:visible");
-        this.imgShown.push(id);
+        this.imgCompare.push(id);
+        console.log(this.imgCompare);
     }
-    if (this.imgShown.length === 2){
-        var id0 = this.imgShown[0];
-        var id1 = this.imgShown[1];
+    //compare two images clicked
+    if (this.imgCompare.length === 2){
+        var id0 = this.imgCompare[0];
+        var id1 = this.imgCompare[1];
+        //if images are différents, hide them
         if(document.querySelector("#img-"+id0).src !== document.querySelector("#img-"+id1).src){
             setTimeout(function(){
                 this.hide(id0, id1);
             }.bind(this), 1000);
+        } else {
+            //else push them to this.imgOk[]
+            this.imgOk.push(id0);
+            this.imgOk.push(id1);
         }
-        this.imgShown = [];
+        //clear this.imgCompare[]
+        this.imgCompare = [];
     }
 
 };
 
-Kittens.prototype.hide = function (id0,id1) {
+Meme.prototype.hide = function (id0,id1) {
     document.querySelector("#img-"+id0).setAttribute("style", "visibility:hidden");
     document.querySelector("#img-"+id1).setAttribute("style", "visibility:hidden");
 }
-
-
-// Kittens.prototype.random = function () {
-//     function randomize(min, max) {
-//         min = Math.ceil(min);
-//         max = Math.floor(max);
-//         return Math.floor(Math.random() * (max - min +1)) + min;
-//     }
-//     do {rand = randomize(0, this.images.length-1);}
-//     while(rand === this.cursor);
-//     this.cursor = rand;
-//     this.show();
-//
-// };

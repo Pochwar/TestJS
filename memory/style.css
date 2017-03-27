@@ -11,5 +11,12 @@ section {
 }
 
 #kittenImages{
-    display: flex; 
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.divimg{
+    background:url(img/back.jpg);
+    background-size: cover;
+    padding: 1px;
 }
