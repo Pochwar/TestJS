@@ -9,3 +9,7 @@ section {
     display : flex;
     justify-content: space-around;
 }
+
+#kittenImages{
+    display: flex; 
+}
