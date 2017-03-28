@@ -1,98 +1,132 @@
-function Meme(images, params){
-    this.images = images;
-    this.params = params || {};
-    this.delay = this.params.delay || 1000;
-    this.height = this.params.height || 150;
-    this.width = this.params.width || 150;
-    this.createMeme();
-    this.imgCompare = [];
-    this.imgOk = []
-}
+(function(){
 
-Meme.prototype.createMeme = function () {
-    //creation de la div contenant les Boutons
-    var parent = $("#kittenImages");
+    function Plugin(){};
+    function Meme(){};
 
-    //duplication du tableau
-    var images2 = this.images;
-    var Meme = this.images.concat(images2);
-
-    //creation d'un tableau d'images en doubles mélangées aléatoirement
-    var cloneMeme = []
-    var usedIndex = []
-    var i = 0;
-    while (cloneMeme.length !== Meme.length){
-        do {
-            var rand = Math.floor(Math.random()*Meme.length);
-        } while (usedIndex.indexOf(rand) !== -1)
-        cloneMeme[i] = Meme[rand];
-        usedIndex.push(rand);
-        i++;
-    }
-    // cloneMeme.forEach(function(img){
-    //     console.log(img)
-    // });
-    // creation des images
-    cloneMeme.forEach(this.createImg.bind(this, parent));
-};
-
-//fonction de création des images
-Meme.prototype.createImg = function (parent, image, id) {
-    var div = document.createElement("div");
-    div.addEventListener('click', this.show.bind(this, id));
-    div.setAttribute("style", "height:"+this.height+"px;width:"+this.width+"px");
-    div.className = "divimg";
-    var img = document.createElement("img");
-    img.setAttribute("src", image);
-    img.classeName = "img";
-    img.id = "img-" + id;
-    img.setAttribute("height", this.height);
-    img.setAttribute("width", this.width);
-    img.setAttribute("style", "visibility:hidden");
-    div.append(img);
-    parent.append(div);
-};
-
-Meme.prototype.show = function (id) {
-    var ok = true;
-    //test if img hasn't already been clicked
-    this.imgCompare.forEach(function(imgId){
-        if (id === imgId) {
-            ok = false
-        }
-    });
-    //or img has'nt already been validated
-    this.imgOk.forEach(function(imgId){
-        if (id === imgId) {
-            ok = false
-        }
-    });
-    if (ok && this.imgCompare.length < 2){
-        document.querySelector("#img-"+id).setAttribute("style", "visibility:visible");
-        this.imgCompare.push(id);
-        console.log(this.imgCompare);
-    }
-    //compare two images clicked
-    if (this.imgCompare.length === 2){
-        var id0 = this.imgCompare[0];
-        var id1 = this.imgCompare[1];
-        //if images are différents, hide them
-        if(document.querySelector("#img-"+id0).src !== document.querySelector("#img-"+id1).src){
-            setTimeout(function(){
-                this.hide(id0, id1);
-            }.bind(this), 1000);
+    Plugin.prototype.init = function (parent, memeImages, memeParams){
+        var params = Object.assign({
+            delay : 1000,
+            height : 150,
+            width : 150
+        }, memeParams);
+        //instance count
+        this.nbInstance;
+        if(this.nbInstance === undefined){
+            this.nbInstance = 0;
         } else {
-            //else push them to this.imgOk[]
-            this.imgOk.push(id0);
-            this.imgOk.push(id1);
+            this.nbInstance++;
         }
-        //clear this.imgCompare[]
-        this.imgCompare = [];
+        console.log(this.nbInstance)
+        var meme = new Meme();
+        meme.nb = this.nbInstance;
+        meme.parent = parent;
+        meme.images = memeImages;
+        meme.delay = params.delay;
+        meme.height = params.height;
+        meme.width = params.width;
+
+        meme.imgCompare = [];
+        meme.imgOk = []
+        // createMeme(meme.parent, meme.delay, meme.height, meme.width);
+        createMeme(meme);
     }
 
-};
+    // this.create = function (memeImages, memeParams){
+    //     images = memeImages;
+    //
+    //
+    // }
 
-Meme.prototype.hide = function (id0,id1) {
-    document.querySelector("#img-"+id0).setAttribute("style", "visibility:hidden");
-    document.querySelector("#img-"+id1).setAttribute("style", "visibility:hidden");
-}
+    //fonctions privées
+    function createMeme(instance) {
+        //creation de la div contenant les Boutons
+        var parent = $("#"+instance.parent);
+
+        //duplication du tableau
+        instance.images2 = instance.images;
+        instance.Meme = instance.images.concat(instance.images2);
+
+        //creation d'un tableau d'images en doubles mélangées aléatoirement
+        instance.cloneMeme = []
+        instance.usedIndex = []
+        var i = 0;
+        while (instance.cloneMeme.length !== instance.Meme.length){
+            do {
+                var rand = Math.floor(Math.random()*instance.Meme.length);
+            } while (instance.usedIndex.indexOf(rand) !== -1)
+            instance.cloneMeme[i] = instance.Meme[rand];
+            instance.usedIndex.push(rand);
+            i++;
+        }
+
+        // creation des images
+        instance.cloneMeme.forEach(function(image, id){
+            createImg(instance, parent, image, id, instance.delay, instance.height, instance.width);
+        });
+    };
+
+    //fonction de création des images
+    function createImg(instance, parent, image, id, delay, height, width) {
+        var div = document.createElement("div");
+        div.addEventListener('click', function(){
+            show(instance, id, delay)
+        });
+        div.setAttribute("style", "height:"+height+"px;width:"+width+"px");
+        div.className = "divimg";
+        var img = document.createElement("img");
+        img.setAttribute("src", image);
+        img.classeName = "img";
+        img.id = "img-" + id + "-" + instance.nb;
+        img.setAttribute("height", height);
+        img.setAttribute("width", width);
+        img.setAttribute("style", "visibility:hidden");
+        div.append(img);
+        parent.append(div);
+    };
+
+    function show(instance, id, delay) {
+        var ok = true;
+        //test if img hasn't already been clicked
+        instance.imgCompare.forEach(function(imgId){
+            if (id === imgId) {
+                ok = false
+            }
+        });
+        //or img has'nt already been validated
+        instance.imgOk.forEach(function(imgId){
+            if (id === imgId) {
+                ok = false
+            }
+        });
+        if (ok && instance.imgCompare.length < 2){
+            document.querySelector("#img-"+id+ "-" + instance.nb).setAttribute("style", "visibility:visible");
+            instance.imgCompare.push(id);
+        }
+        //compare two images clicked
+        if (instance.imgCompare.length === 2){
+            var id0 = instance.imgCompare[0];
+            var id1 = instance.imgCompare[1];
+            //if images are différents, hide them
+            if(document.querySelector("#img-"+ id0 + "-" + instance.nb).src !== document.querySelector("#img-" + id1 + "-" + instance.nb).src){
+                setTimeout(function(){
+                    hide(instance, id0, id1);
+                }, delay);
+            } else {
+                //else push them to this.imgOk[]
+                instance.imgOk.push(id0);
+                instance.imgOk.push(id1);
+            }
+            //clear this.imgCompare[]
+            instance.imgCompare = [];
+        }
+
+    };
+
+    function hide(instance, id0,id1) {
+        document.querySelector("#img-"+id0+ "-" + instance.nb).setAttribute("style", "visibility:hidden");
+        document.querySelector("#img-"+id1+ "-" + instance.nb).setAttribute("style", "visibility:hidden");
+    }
+
+    // affectation du plugin à window
+    this.Mememory = new Plugin();
+})();
